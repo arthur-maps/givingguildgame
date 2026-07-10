@@ -1,167 +1,156 @@
 export default class Player {
 
-constructor(){
+    constructor(){
 
-this.x=600;
-this.y=400;
+        this.x = 600;
+        this.y = 400;
 
-this.speed=2.5;
+        this.speed = 2.5;
 
-this.width=32;
-this.height=32;
+        this.width = 32;
+        this.height = 32;
 
+        this.direction = "down";
 
-this.direction="down";
+        this.frame = 0;
+        this.frameTimer = 0;
 
-this.frame=0;
+        this.sprite = new Image();
+        this.sprite.src = "assets/sprites/player.png";
 
-this.frameTimer=0;
+    }
 
 
-this.sprite=new Image();
+    update(keys){
 
-this.sprite.src=
-"assets/sprites/player.png";
+        let moving = false;
 
-}
 
+        if(keys["w"] || keys["ArrowUp"]){
+            this.y -= this.speed;
+            this.direction = "up";
+            moving = true;
+        }
 
+        if(keys["s"] || keys["ArrowDown"]){
+            this.y += this.speed;
+            this.direction = "down";
+            moving = true;
+        }
 
-update(keys){
+        if(keys["a"] || keys["ArrowLeft"]){
+            this.x -= this.speed;
+            this.direction = "left";
+            moving = true;
+        }
 
+        if(keys["d"] || keys["ArrowRight"]){
+            this.x += this.speed;
+            this.direction = "right";
+            moving = true;
+        }
 
-let moving=false;
 
+        // animation timing
 
+        if(moving){
 
-if(keys["w"] || keys["ArrowUp"]){
+            this.frameTimer++;
 
-this.y-=this.speed;
+            if(this.frameTimer > 10){
 
-this.direction="up";
+                this.frame++;
 
-moving=true;
+                if(this.frame > 3){
+                    this.frame = 0;
+                }
 
-}
+                this.frameTimer = 0;
+            }
 
+        } 
+        else {
 
+            // idle frame
 
-if(keys["s"] || keys["ArrowDown"]){
+            this.frame = 0;
 
-this.y+=this.speed;
+        }
 
-this.direction="down";
+    }
 
-moving=true;
 
-}
+    draw(ctx, camera){
 
 
+        // shadow
 
-if(keys["a"] || keys["ArrowLeft"]){
+        ctx.fillStyle = "rgba(0,0,0,0.3)";
 
-this.x-=this.speed;
+        ctx.beginPath();
 
-this.direction="left";
+        ctx.ellipse(
+            this.x - camera.x + 16,
+            this.y - camera.y + 28,
+            12,
+            5,
+            0,
+            0,
+            Math.PI * 2
+        );
 
-moving=true;
+        ctx.fill();
 
-}
 
 
+        let row = 0;
 
-if(keys["d"] || keys["ArrowRight"]){
 
-this.x+=this.speed;
+        switch(this.direction){
 
-this.direction="right";
+            case "down":
+                row = 0;
+                break;
 
-moving=true;
+            case "left":
+                row = 1;
+                break;
 
-}
+            case "right":
+                row = 2;
+                break;
 
+            case "up":
+                row = 3;
+                break;
 
+        }
 
-if(moving){
 
-this.frameTimer++;
 
+        ctx.drawImage(
 
-if(this.frameTimer>10){
+            this.sprite,
 
-this.frame++;
+            // source x,y in sprite sheet
 
-this.frameTimer=0;
+            this.frame * 32,
+            row * 32,
 
-}
+            32,
+            32,
 
 
-}
+            // destination x,y
 
-else{
+            this.x - camera.x,
+            this.y - camera.y,
 
-this.frame=0;
+            32,
+            32
 
-}
+        );
 
-
-
-}
-
-
-
-
-draw(ctx,camera){
-
-
-let row;
-
-
-switch(this.direction){
-
-case "down":
-row=0;
-break;
-
-case "left":
-row=1;
-break;
-
-case "right":
-row=2;
-break;
-
-case "up":
-row=3;
-break;
-
-}
-
-
-
-ctx.drawImage(
-
-this.sprite,
-
-
-this.frame*32,
-row*32,
-
-32,
-32,
-
-
-this.x-camera.x,
-this.y-camera.y,
-
-32,
-32
-
-);
-
-
-}
-
-
+    }
 
 }
