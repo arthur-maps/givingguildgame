@@ -91,7 +91,11 @@ time
 
 
 
-player.update();
+import {keys} from "./input.js";
+
+...
+
+player.update(keys);
 
 
 camera.update(player);
