@@ -8,6 +8,8 @@ import Intro from "./engine/intro.js";
 import Particles from "./engine/particles.js";
 import Lighting from "./engine/lighting.js";
 
+import {keys} from "./input.js";
+
 
 const canvas =
 document.getElementById("game");
@@ -89,11 +91,6 @@ canvas.height,
 time
 );
 
-
-
-import {keys} from "./input.js";
-
-...
 
 player.update(keys);
 
