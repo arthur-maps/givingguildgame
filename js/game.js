@@ -107,6 +107,14 @@ ctx,
 camera
 );
 
+  
+
+  player.draw(
+    ctx,
+    camera
+);
+
+
 
 
 particles.update();
