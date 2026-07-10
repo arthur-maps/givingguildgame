@@ -1,13 +1,20 @@
 export const keys = {};
 
-window.addEventListener("keydown",e=>{
+window.addEventListener(
+    "keydown",
+    (event)=>{
 
-keys[e.key]=true;
+        keys[event.key] = true;
 
-});
+    }
+);
 
-window.addEventListener("keyup",e=>{
 
-keys[e.key]=false;
+window.addEventListener(
+    "keyup",
+    (event)=>{
 
-});
+        keys[event.key] = false;
+
+    }
+);
