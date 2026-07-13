@@ -45,27 +45,58 @@ export default class World {
 
                 // ---------- Grass ----------
 
-                switch (tile.variation) {
+                const colors=[
 
-                    case 0:
-                        ctx.fillStyle = "#5ea84e";
-                        break;
+"#5ea84e",
+"#63b251",
+"#5b9e4d",
+"#67b759"
 
-                    case 1:
-                        ctx.fillStyle = "#63b251";
-                        break;
+];
 
-                    case 2:
-                        ctx.fillStyle = "#5b9e4d";
-                        break;
+for(let py=0;py<8;py++){
 
-                    case 3:
-                        ctx.fillStyle = "#67b759";
-                        break;
+    for(let px=0;px<8;px++){
 
-                }
+        ctx.fillStyle=
+            colors[
+                tile.noise[py][px]
+            ];
 
-                ctx.fillRect(x, y, tileSize, tileSize);
+        ctx.fillRect(
+
+            x+px*4,
+            y+py*4,
+
+            4,
+            4
+
+        );
+
+    }
+
+}
+                // switch (tile.variation) {
+
+                //     case 0:
+                //         ctx.fillStyle = "#5ea84e";
+                //         break;
+
+                //     case 1:
+                //         ctx.fillStyle = "#63b251";
+                //         break;
+
+                //     case 2:
+                //         ctx.fillStyle = "#5b9e4d";
+                //         break;
+
+                //     case 3:
+                //         ctx.fillStyle = "#67b759";
+                //         break;
+
+                // }
+
+                // ctx.fillRect(x, y, tileSize, tileSize);
 
 
                 // ---------- Flowers ----------
