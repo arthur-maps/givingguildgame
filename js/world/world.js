@@ -1,5 +1,3 @@
-import Terrain from "./terrain.js";
-
 export default class World {
 
     constructor() {
@@ -7,149 +5,75 @@ export default class World {
         this.width = 4000;
         this.height = 4000;
 
-        this.terrain = new Terrain(this.width, this.height);
+        this.background = new Image();
+        this.background.src = "assets/backgrounds/grass.png";
 
     }
 
 
     draw(ctx, camera) {
 
-        const tileSize = this.terrain.tileSize;
+        if (!this.background.complete) {
 
-        // Calculate visible tile range (camera culling)
+            // fallback while image loads
 
-        const startCol = Math.max(0, Math.floor(camera.x / tileSize));
-        const endCol = Math.min(
-            this.terrain.cols,
-            startCol + Math.ceil(ctx.canvas.width / tileSize) + 2
-        );
+            ctx.fillStyle = "#5ba94f";
+            ctx.fillRect(
+                -camera.x,
+                -camera.y,
+                this.width,
+                this.height
+            );
 
-        const startRow = Math.max(0, Math.floor(camera.y / tileSize));
-        const endRow = Math.min(
-            this.terrain.rows,
-            startRow + Math.ceil(ctx.canvas.height / tileSize) + 2
-        );
+            return;
 
-
-        // Draw only visible tiles
-
-        for (let row = startRow; row < endRow; row++) {
-
-            for (let col = startCol; col < endCol; col++) {
-
-                const tile = this.terrain.tiles[row][col];
-
-                const x = col * tileSize - camera.x;
-                const y = row * tileSize - camera.y;
+        }
 
 
-                // ---------- Grass ----------
+        const tile = 256;
 
-                const colors=[
+        // start one tile offscreen so seams never appear
 
-"#5ea84e",
-"#63b251",
-"#5b9e4d",
-"#67b759"
+        const startX =
+            Math.floor(camera.x / tile) * tile - tile;
 
-];
+        const startY =
+            Math.floor(camera.y / tile) * tile - tile;
 
-for(let py=0;py<8;py++){
+        const endX =
+            camera.x + ctx.canvas.width + tile;
 
-    for(let px=0;px<8;px++){
-
-        ctx.fillStyle=
-            colors[
-                tile.noise[py][px]
-            ];
-
-        ctx.fillRect(
-
-            x+px*4,
-            y+py*4,
-
-            4,
-            4
-
-        );
-
-    }
-
-}
-                // switch (tile.variation) {
-
-                //     case 0:
-                //         ctx.fillStyle = "#5ea84e";
-                //         break;
-
-                //     case 1:
-                //         ctx.fillStyle = "#63b251";
-                //         break;
-
-                //     case 2:
-                //         ctx.fillStyle = "#5b9e4d";
-                //         break;
-
-                //     case 3:
-                //         ctx.fillStyle = "#67b759";
-                //         break;
-
-                // }
-
-                // ctx.fillRect(x, y, tileSize, tileSize);
+        const endY =
+            camera.y + ctx.canvas.height + tile;
 
 
-                // ---------- Flowers ----------
 
-                if (tile.decoration === "flower") {
+        for (let y = startY; y < endY; y += tile) {
 
-                    ctx.fillStyle = "#ffd84f";
+            for (let x = startX; x < endX; x += tile) {
 
-                    ctx.beginPath();
+                ctx.drawImage(
 
-                    ctx.arc(
-                        x + 16,
-                        y + 16,
-                        2,
-                        0,
-                        Math.PI * 2
-                    );
+                    this.background,
 
-                    ctx.fill();
+                    x - camera.x,
 
-                }
+                    y - camera.y,
 
+                    tile,
 
-                // ---------- Rocks ----------
+                    tile
 
-                if (tile.decoration === "rock") {
-
-                    ctx.fillStyle = "#777";
-
-                    ctx.beginPath();
-
-                    ctx.arc(
-                        x + 16,
-                        y + 16,
-                        4,
-                        0,
-                        Math.PI * 2
-                    );
-
-                    ctx.fill();
-
-                }
+                );
 
             }
 
         }
 
 
-        // ---------- Dirt Roads ----------
+        // Temporary dirt roads
 
         ctx.fillStyle = "#c49b5d";
-
-        // Vertical road
 
         ctx.fillRect(
             700 - camera.x,
@@ -157,8 +81,6 @@ for(let py=0;py<8;py++){
             120,
             this.height
         );
-
-        // Horizontal road
 
         ctx.fillRect(
             -camera.x,
