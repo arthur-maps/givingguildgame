@@ -1,137 +1,141 @@
-export default class World{
+import Terrain from "./terrain.js";
 
-constructor(){
+export default class World {
 
-this.width=4000;
-this.height=4000;
+    constructor() {
 
-}
+        this.width = 4000;
+        this.height = 4000;
 
+        this.terrain = new Terrain(this.width, this.height);
 
-draw(ctx,camera){
-
-for(let y=0;y<this.terrain.rows;y++){
-
-for(let x=0;x<this.terrain.cols;x++){
-
-let tile=this.terrain.tiles[y][x];
-
-let px=x*this.terrain.tileSize-camera.x;
-
-let py=y*this.terrain.tileSize-camera.y;
-
-switch(tile.variation){
-
-case 0:
-
-ctx.fillStyle="#5ea84e";
-break;
-
-case 1:
-
-ctx.fillStyle="#63b251";
-break;
-
-case 2:
-
-ctx.fillStyle="#5b9e4d";
-break;
-
-case 3:
-
-ctx.fillStyle="#67b759";
-break;
-
-}
-
-ctx.fillRect(
-
-px,
-py,
-
-32,
-32
-
-);
-
-if(tile.decoration=="flower"){
-
-ctx.fillStyle="#ffd84f";
-
-ctx.beginPath();
-
-ctx.arc(
-
-px+16,
-py+16,
-
-2,
-
-0,
-
-Math.PI*2
-
-);
-
-ctx.fill();
-
-}
-
-if(tile.decoration=="rock"){
-
-ctx.fillStyle="#888";
-
-ctx.beginPath();
-
-ctx.arc(
-
-px+18,
-py+15,
-
-4,
-
-0,
-
-Math.PI*2
-
-);
-
-ctx.fill();
-
-}
+    }
 
 
-}
-  
-// draw(ctx,camera){
+    draw(ctx, camera) {
 
-// ctx.fillStyle="#3d7c42";
+        const tileSize = this.terrain.tileSize;
 
-// ctx.fillRect(
-// -camera.x,
-// -camera.y,
-// this.width,
-// this.height
-// );
+        // Calculate visible tile range (camera culling)
 
-// // simple paths
+        const startCol = Math.max(0, Math.floor(camera.x / tileSize));
+        const endCol = Math.min(
+            this.terrain.cols,
+            startCol + Math.ceil(ctx.canvas.width / tileSize) + 2
+        );
 
-// ctx.fillStyle="#c49b5d";
+        const startRow = Math.max(0, Math.floor(camera.y / tileSize));
+        const endRow = Math.min(
+            this.terrain.rows,
+            startRow + Math.ceil(ctx.canvas.height / tileSize) + 2
+        );
 
-// ctx.fillRect(
-// 700-camera.x,
-// 0-camera.y,
-// 120,
-// 4000
-// );
 
-// ctx.fillRect(
-// 0-camera.x,
-// 900-camera.y,
-// 4000,
-// 120
-// );
+        // Draw only visible tiles
 
-// }
-  
+        for (let row = startRow; row < endRow; row++) {
+
+            for (let col = startCol; col < endCol; col++) {
+
+                const tile = this.terrain.tiles[row][col];
+
+                const x = col * tileSize - camera.x;
+                const y = row * tileSize - camera.y;
+
+
+                // ---------- Grass ----------
+
+                switch (tile.variation) {
+
+                    case 0:
+                        ctx.fillStyle = "#5ea84e";
+                        break;
+
+                    case 1:
+                        ctx.fillStyle = "#63b251";
+                        break;
+
+                    case 2:
+                        ctx.fillStyle = "#5b9e4d";
+                        break;
+
+                    case 3:
+                        ctx.fillStyle = "#67b759";
+                        break;
+
+                }
+
+                ctx.fillRect(x, y, tileSize, tileSize);
+
+
+                // ---------- Flowers ----------
+
+                if (tile.decoration === "flower") {
+
+                    ctx.fillStyle = "#ffd84f";
+
+                    ctx.beginPath();
+
+                    ctx.arc(
+                        x + 16,
+                        y + 16,
+                        2,
+                        0,
+                        Math.PI * 2
+                    );
+
+                    ctx.fill();
+
+                }
+
+
+                // ---------- Rocks ----------
+
+                if (tile.decoration === "rock") {
+
+                    ctx.fillStyle = "#777";
+
+                    ctx.beginPath();
+
+                    ctx.arc(
+                        x + 16,
+                        y + 16,
+                        4,
+                        0,
+                        Math.PI * 2
+                    );
+
+                    ctx.fill();
+
+                }
+
+            }
+
+        }
+
+
+        // ---------- Dirt Roads ----------
+
+        ctx.fillStyle = "#c49b5d";
+
+        // Vertical road
+
+        ctx.fillRect(
+            700 - camera.x,
+            -camera.y,
+            120,
+            this.height
+        );
+
+        // Horizontal road
+
+        ctx.fillRect(
+            -camera.x,
+            900 - camera.y,
+            this.width,
+            120
+        );
+
+    }
+
 }
