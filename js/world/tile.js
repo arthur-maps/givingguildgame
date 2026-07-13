@@ -1,4 +1,4 @@
-export default class Tile{
+export default class Tile {
 
     constructor(type){
 
@@ -8,19 +8,25 @@ export default class Tile{
 
         this.decoration = null;
 
-        // 3% flowers
-
-        if(type=="grass" && Math.random()<0.03){
-
+        if(type=="grass" && Math.random()<0.03)
             this.decoration="flower";
 
-        }
-
-        // 2% rocks
-
-        if(type=="grass" && Math.random()<0.02){
-
+        if(type=="grass" && Math.random()<0.02)
             this.decoration="rock";
+
+        // NEW
+
+        this.noise=[];
+
+        for(let y=0;y<8;y++){
+
+            this.noise[y]=[];
+
+            for(let x=0;x<8;x++){
+
+                this.noise[y][x]=Math.floor(Math.random()*4);
+
+            }
 
         }
 
